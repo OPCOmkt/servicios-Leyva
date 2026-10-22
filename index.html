@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Cotizador Express</title>
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -15,13 +13,11 @@
     }
     .bg-brand-primary { background-color: var(--color-primario); }
     .text-brand-primary { color: var(--color-primario); }
-    .border-brand-primary { border-color: var(--color-primario); }
-    .bg-brand-secondary { background-color: var(--color-secundario); }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased pb-10">
 
-  <!-- PANTALLA 1: LOGIN POR PIN -->
+  <!-- PANTALLA 1: LOGIN -->
   <div id="screen-login" class="min-h-screen flex flex-col justify-center items-center px-4">
     <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
       <div id="logo-container" class="flex justify-center mb-2">
@@ -30,10 +26,9 @@
         </div>
       </div>
       <div>
-        <h1 id="app-title" class="text-xl font-bold text-slate-800">Cargando...</h1>
-        <p class="text-xs text-slate-500 mt-1">Ingresa tu PIN de acceso para iniciar</p>
+        <h1 id="app-title" class="text-xl font-bold text-slate-800">Cotizador Express</h1>
+        <p class="text-xs text-slate-500 mt-1">Ingresa tu PIN de acceso</p>
       </div>
-
       <div class="space-y-4">
         <input id="pin-input" type="password" maxlength="6" pattern="\d*" inputmode="numeric" placeholder="••••" 
                class="w-full text-center text-3xl tracking-widest font-bold py-3 border-2 border-slate-200 rounded-xl focus:border-brand-primary focus:outline-none transition">
@@ -45,224 +40,114 @@
     </div>
   </div>
 
-  <!-- PANTALLA 2: APLICACIÓN Y CAPTURA (OCULTA INICIALMENTE) -->
+  <!-- PANTALLA 2: CAPTURA -->
   <div id="screen-app" class="hidden max-w-md mx-auto">
-    <!-- Header -->
     <header class="bg-brand-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-2xl">
-      <div class="flex items-center space-x-3">
-        <span class="font-bold text-lg" id="nav-brand-name">Cotizador</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
-        <button onclick="logout()" class="text-white/80 hover:text-white p-1">
-          <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
-      </div>
+      <span class="font-bold text-lg" id="nav-brand-name">Cotizador</span>
+      <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
     </header>
 
     <main class="p-4 space-y-5">
-      <!-- Datos del Cliente -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
-          <i class="fa-solid fa-user-gear text-brand-primary"></i>
-          <span>1. Datos del Cliente</span>
-        </h2>
-        <div class="space-y-2.5 text-sm">
-          <input id="cli-nombre" type="text" placeholder="Nombre completo *" class="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-slate-400">
-          <div class="grid grid-cols-2 gap-2">
-            <input id="cli-tel" type="tel" placeholder="Teléfono *" class="p-3 border border-slate-200 rounded-xl focus:outline-none">
-            <input id="cli-correo" type="email" placeholder="Correo elect." class="p-3 border border-slate-200 rounded-xl focus:outline-none">
-          </div>
-          <input id="cli-dir" type="text" placeholder="Dirección del proyecto" class="w-full p-3 border border-slate-200 rounded-xl focus:outline-none">
-          <input id="cli-proyecto" type="text" placeholder="Tipo de proyecto (Ej: Portón 3x2m)" class="w-full p-3 border border-slate-200 rounded-xl focus:outline-none">
+        <h2 class="text-sm font-bold text-slate-700">1. Datos del Cliente</h2>
+        <input id="cli-nombre" type="text" placeholder="Nombre completo *" class="w-full p-3 border rounded-xl text-sm">
+        <div class="grid grid-cols-2 gap-2">
+          <input id="cli-tel" type="tel" placeholder="Teléfono" class="p-3 border rounded-xl text-sm">
+          <input id="cli-correo" type="email" placeholder="Correo" class="p-3 border rounded-xl text-sm">
         </div>
+        <input id="cli-proyecto" type="text" placeholder="Tipo de proyecto" class="w-full p-3 border rounded-xl text-sm">
       </section>
 
-      <!-- Captura de Materiales -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
-            <i class="fa-solid fa-cubes text-brand-primary"></i>
-            <span>2. Materiales Necesarios</span>
-          </h2>
-          <button onclick="agregarFilaMaterial()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg transition">
-            + Agregar
-          </button>
+          <h2 class="text-sm font-bold text-slate-700">2. Materiales</h2>
+          <button onclick="agregarFilaMaterial()" class="text-xs bg-slate-100 font-semibold px-3 py-1.5 rounded-lg">+ Agregar</button>
         </div>
-        <div id="lista-materiales" class="space-y-2">
-          <!-- Las filas de materiales se insertan dinámicamente -->
-        </div>
+        <div id="lista-materiales" class="space-y-2"></div>
       </section>
 
-      <!-- Captura de Actividades -->
-      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex justify-between items-center">
-          <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
-            <i class="fa-solid fa-screwdriver-wrench text-brand-primary"></i>
-            <span>3. Actividades / Servicios</span>
-          </h2>
-          <button onclick="agregarFilaActividad()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg transition">
-            + Agregar
-          </button>
-        </div>
-        <div id="lista-actividades" class="space-y-2">
-          <!-- Las filas de actividades se insertan dinámicamente -->
-        </div>
-      </section>
-
-      <!-- Fotos y Comentarios -->
-      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
-          <i class="fa-solid fa-camera text-brand-primary"></i>
-          <span>4. Evidencia y Notas</span>
-        </h2>
-        <input id="input-fotos" type="file" accept="image/*" multiple class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
-        <textarea id="cli-comentarios" rows="2" placeholder="Comentarios adicionales o especificaciones técnicas..." class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:outline-none"></textarea>
-      </section>
-
-      <!-- Resumen Económico -->
       <section class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg space-y-3">
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Resumen de Cotización</h3>
-        <div class="space-y-1.5 text-sm">
-          <div class="flex justify-between text-slate-300">
-            <span>Costo Materiales:</span>
-            <span id="lbl-mat">$0.00</span>
-          </div>
-          <div class="flex justify-between text-slate-300">
-            <span>Costo Actividades:</span>
-            <span id="lbl-act">$0.00</span>
-          </div>
-          <div class="flex justify-between font-medium text-slate-200 pt-1 border-t border-slate-800">
-            <span>Costo Directo Total:</span>
-            <span id="lbl-directo">$0.00</span>
-          </div>
-          <div class="flex justify-between items-center text-amber-400 font-medium">
-            <span>Margen (% Ganancia):</span>
-            <input id="input-margen" type="number" class="w-16 bg-slate-800 border border-slate-700 rounded text-right px-2 py-0.5 text-amber-400 font-bold focus:outline-none" oninput="calcularTotales()">
-          </div>
-          <div class="flex justify-between text-xl font-bold text-white pt-2 border-t border-slate-800">
-            <span>Total Cliente:</span>
-            <span id="lbl-total-cliente" class="text-emerald-400">$0.00</span>
-          </div>
+        <div class="flex justify-between text-xl font-bold">
+          <span>Total Cliente:</span>
+          <span id="lbl-total-cliente" class="text-emerald-400">$0.00</span>
         </div>
       </section>
 
-      <!-- Botón de Envío -->
-      <button id="btn-guardar" onclick="enviarCotizacion()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition active:scale-95 flex items-center justify-center space-x-2">
-        <i class="fa-solid fa-paper-plane"></i>
-        <span>Guardar y Notificar</span>
+      <button id="btn-guardar" onclick="enviarCotizacion()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg">
+        Guardar Cotización
       </button>
     </main>
   </div>
 
-  <!-- SCRIPT DE LÓGICA FRONTEND -->
   <script>
+    // INSERTA AQUÍ TU URL DE GOOGLE APPS SCRIPT
+    const GAS_API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
+
     let globalConfig = {};
     let globalCatalogos = { materiales: [], actividades: [] };
     let usuarioActual = null;
 
-    // Inicializar App
-    window.onload = function() {
-      google.script.run.withSuccessHandler(function(config) {
+    window.onload = async function() {
+      if(GAS_API_URL.includes("PEGA_AQUI")) return;
+      try {
+        const config = await fetch(GAS_API_URL + '?action=getConfig').then(r => r.json());
         globalConfig = config;
-        document.getElementById('app-title').innerText = config.nombre_empresa || 'Cotizador Express';
-        if(config.color_primario) {
-          document.documentElement.style.setProperty('--color-primario', config.color_primario);
-        }
-        if(config.color_secundario) {
-          document.documentElement.style.setProperty('--color-secundario', config.color_secundario);
-        }
-        if(config.url_logo && config.url_logo.startsWith('http')) {
-          document.getElementById('logo-container').innerHTML = `<img src="${config.url_logo}" class="h-16 object-contain">`;
-        }
-        document.getElementById('input-margen').value = config['margen_ganancia_defecto_%'] || 35;
-      }).getConfiguracionInicial();
-
-      google.script.run.withSuccessHandler(function(catalogos) {
+        if(config.nombre_empresa) document.getElementById('app-title').innerText = config.nombre_empresa;
+        
+        const catalogos = await fetch(GAS_API_URL + '?action=getCatalogos').then(r => r.json());
         globalCatalogos = catalogos;
-      }).getCatalogos();
+      } catch(e) {
+        console.error("Error al cargar datos:", e);
+      }
     };
 
-    function handleLogin() {
+    async function handleLogin() {
       const pin = document.getElementById('pin-input').value;
       const btn = document.getElementById('btn-login');
       btn.innerText = 'Verificando...';
-      btn.disabled = true;
 
-      google.script.run.withSuccessHandler(function(res) {
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', pin: pin })
+        }).then(r => r.json());
+
         btn.innerText = 'Ingresar';
-        btn.disabled = false;
         if (res.exito) {
           usuarioActual = res.usuario;
           document.getElementById('screen-login').classList.add('hidden');
           document.getElementById('screen-app').classList.remove('hidden');
-          document.getElementById('nav-brand-name').innerText = globalConfig.nombre_empresa || 'Cotizador';
-          document.getElementById('user-badge').innerText = usuarioActual.nombre;
-          // Agregar primeras filas por defecto
           agregarFilaMaterial();
-          agregarFilaActividad();
         } else {
-          const err = document.getElementById('login-error');
-          err.innerText = res.mensaje;
-          err.classList.remove('hidden');
+          document.getElementById('login-error').innerText = res.mensaje;
+          document.getElementById('login-error').classList.remove('hidden');
         }
-      }).loginUsuario(pin);
-    }
-
-    function logout() {
-      location.reload();
+      } catch(e) {
+        btn.innerText = 'Ingresar';
+        alert("Error al conectar con la base de datos.");
+      }
     }
 
     function agregarFilaMaterial() {
       const container = document.getElementById('lista-materiales');
-      const index = container.children.length;
       let options = '<option value="">Seleccionar material...</option>';
       globalCatalogos.materiales.forEach(m => {
-        options += `<option value="${m.id}">${m.nombre} ($${m.precioUnitario}/tramo de ${m.largoTramo}m)</option>`;
+        options += `<option value="${m.id}">${m.nombre} ($${m.precioUnitario})</option>`;
       });
 
       const div = document.createElement('div');
-      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs';
+      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs';
       div.innerHTML = `
-        <select class="col-span-7 p-2 border rounded-lg bg-white sel-mat" onchange="calcularTotales()">
-          ${options}
-        </select>
+        <select class="col-span-7 p-2 border rounded-lg bg-white sel-mat" onchange="calcularTotales()">${options}</select>
         <input type="number" placeholder="Mts" class="col-span-3 p-2 border rounded-lg text-center input-cant-mat" oninput="calcularTotales()">
-        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      `;
-      container.appendChild(div);
-    }
-
-    function agregarFilaActividad() {
-      const container = document.getElementById('lista-actividades');
-      let options = '<option value="">Seleccionar actividad...</option>';
-      globalCatalogos.actividades.forEach(a => {
-        options += `<option value="${a.id}">${a.nombre} ($${a.costoBase})</option>`;
-      });
-
-      const div = document.createElement('div');
-      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs';
-      div.innerHTML = `
-        <select class="col-span-7 p-2 border rounded-lg bg-white sel-act" onchange="calcularTotales()">
-          ${options}
-        </select>
-        <input type="number" value="1" placeholder="Cant" class="col-span-3 p-2 border rounded-lg text-center input-cant-act" oninput="calcularTotales()">
-        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center"><i class="fa-solid fa-trash"></i></button>
       `;
       container.appendChild(div);
     }
 
     function calcularTotales() {
       let costoMat = 0;
-      let costoAct = 0;
-
-      // Calcular Materiales con regla de Tramos Completos
-      const filasMat = document.querySelectorAll('#lista-materiales > div');
-      filasMat.forEach(f => {
+      document.querySelectorAll('#lista-materiales > div').forEach(f => {
         const idMat = f.querySelector('.sel-mat').value;
         const cantMetros = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
         if (idMat && cantMetros > 0) {
@@ -273,122 +158,37 @@
           }
         }
       });
-
-      // Calcular Actividades
-      const filasAct = document.querySelectorAll('#lista-actividades > div');
-      filasAct.forEach(f => {
-        const idAct = f.querySelector('.sel-act').value;
-        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
-        if (idAct && cant > 0) {
-          const item = globalCatalogos.actividades.find(a => a.id === idAct);
-          if (item) {
-            costoAct += cant * item.costoBase;
-          }
-        }
-      });
-
-      const costoDirecto = costoMat + costoAct;
-      const pctMargen = parseFloat(document.getElementById('input-margen').value) || 0;
-      const ganancia = costoDirecto * (pctMargen / 100);
-      const totalCliente = costoDirecto + ganancia;
-
-      document.getElementById('lbl-mat').innerText = '$' + costoMat.toFixed(2);
-      document.getElementById('lbl-act').innerText = '$' + costoAct.toFixed(2);
-      document.getElementById('lbl-directo').innerText = '$' + costoDirecto.toFixed(2);
-      document.getElementById('lbl-total-cliente').innerText = '$' + totalCliente.toFixed(2);
+      document.getElementById('lbl-total-cliente').innerText = '$' + (costoMat * 1.35).toFixed(2);
     }
 
-    function enviarCotizacion() {
-      const nombreCli = document.getElementById('cli-nombre').value;
-      if (!nombreCli) {
-        alert('Por favor escribe el nombre del cliente.');
-        return;
-      }
-
+    async function enviarCotizacion() {
       const btn = document.getElementById('btn-guardar');
-      btn.disabled = true;
-      btn.innerText = 'Guardando cotización...';
-
-      // Recopilar items de materiales
-      const itemsMateriales = [];
-      document.querySelectorAll('#lista-materiales > div').forEach(f => {
-        const id = f.querySelector('.sel-mat').value;
-        const cant = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
-        if(id && cant > 0) {
-          const mat = globalCatalogos.materiales.find(m => m.id === id);
-          const tramos = Math.ceil(cant / mat.largoTramo);
-          itemsMateriales.push({
-            id: mat.id,
-            nombre: mat.nombre,
-            cantidadMetros: cant,
-            tramosCalculados: tramos,
-            precioUnitarioTramo: mat.precioUnitario,
-            subtotal: tramos * mat.precioUnitario
-          });
-        }
-      });
-
-      // Recopilar items de actividades
-      const itemsActividades = [];
-      document.querySelectorAll('#lista-actividades > div').forEach(f => {
-        const id = f.querySelector('.sel-act').value;
-        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
-        if(id && cant > 0) {
-          const act = globalCatalogos.actividades.find(a => a.id === id);
-          itemsActividades.push({
-            id: act.id,
-            nombre: act.nombre,
-            cantidad: cant,
-            costoBase: act.costoBase,
-            subtotal: cant * act.costoBase
-          });
-        }
-      });
-
-      // Calcular totales para el payload
-      const costoMat = itemsMateriales.reduce((acc, i) => acc + i.subtotal, 0);
-      const costoAct = itemsActividades.reduce((acc, i) => acc + i.subtotal, 0);
-      const costoDirecto = costoMat + costoAct;
-      const pctMargen = parseFloat(document.getElementById('input-margen').value) || 0;
-      const montoGanancia = costoDirecto * (pctMargen / 100);
-      const totalCliente = costoDirecto + montoGanancia;
-
+      btn.innerText = 'Guardando...';
+      
       const payload = {
-        config: globalConfig,
         idTrabajador: usuarioActual.id,
         cliente: {
-          nombre: nombreCli,
+          nombre: document.getElementById('cli-nombre').value,
           telefono: document.getElementById('cli-tel').value,
           correo: document.getElementById('cli-correo').value,
-          direccion: document.getElementById('cli-dir').value,
           tipoProyecto: document.getElementById('cli-proyecto').value
         },
-        itemsMateriales: itemsMateriales,
-        itemsActividades: itemsActividades,
-        totales: {
-          costoMateriales: costoMat,
-          costoActividades: costoAct,
-          costoDirectoTotal: costoDirecto,
-          margenGananciaPorcentaje: pctMargen,
-          montoGanancia: montoGanancia,
-          subtotalSinImpuesto: totalCliente,
-          impuestoMonto: 0,
-          totalCliente: totalCliente
-        },
-        comentarios: document.getElementById('cli-comentarios').value,
-        fotos: []
+        itemsMateriales: [],
+        itemsActividades: [],
+        totales: { costoMateriales: 0, costoActividades: 0, costoDirectoTotal: 0, margenGananciaPorcentaje: 35, montoGanancia: 0, subtotalSinImpuesto: 0, impuestoMonto: 0, totalCliente: 0 }
       };
 
-      google.script.run.withSuccessHandler(function(res) {
-        btn.disabled = false;
-        btn.innerText = 'Guardar y Notificar';
-        if (res.exito) {
-          alert('¡Cotización guardada con éxito! Folio: ' + res.folio);
-          location.reload();
-        } else {
-          alert('Error al guardar: ' + res.mensaje);
-        }
-      }).guardarCotizacion(payload);
+      const res = await fetch(GAS_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'guardarCotizacion', payload: payload })
+      }).then(r => r.json());
+
+      if(res.exito) {
+        alert('Cotización guardada! Folio: ' + res.folio);
+        location.reload();
+      } else {
+        alert('Error: ' + res.mensaje);
+      }
     }
   </script>
 </body>
