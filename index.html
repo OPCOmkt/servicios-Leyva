@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <!-- PANTALLA 1.5: SELECTOR DE MÓDULO (EXCLUSIVO PARA DUEÑO) -->
+  <!-- PANTALLA 1.5: SELECTOR DE MÓDULO (EXCLUSIVO DUEÑO) -->
   <div id="screen-owner-selector" class="hidden min-h-screen flex flex-col justify-center items-center px-4">
     <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
       <div>
@@ -91,12 +91,10 @@
     <header class="bg-brand-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-2xl">
       <span class="font-bold text-lg" id="nav-brand-name">Cotizador</span>
       <div class="flex items-center space-x-2">
-        <!-- Botón para cambiar a Dashboard si es el Dueño -->
         <button id="btn-switch-dashboard" onclick="abrirDashboard()" class="hidden text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-2.5 py-1 rounded-full transition flex items-center space-x-1">
           <i class="fa-solid fa-chart-pie"></i>
           <span>Dashboard</span>
         </button>
-
         <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
         <button onclick="location.reload()" class="text-white/80 hover:text-white p-1">
           <i class="fa-solid fa-right-from-bracket"></i>
@@ -105,7 +103,6 @@
     </header>
 
     <main class="p-4 space-y-5">
-      <!-- 1. Datos del Cliente -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
         <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-user text-brand-primary"></i>
@@ -125,7 +122,6 @@
         </div>
       </section>
 
-      <!-- 2. Materiales -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
         <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-cubes text-brand-primary"></i>
@@ -138,7 +134,6 @@
         </button>
       </section>
 
-      <!-- 3. Actividades -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
         <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-screwdriver-wrench text-brand-primary"></i>
@@ -151,7 +146,6 @@
         </button>
       </section>
 
-      <!-- 4. Fotos -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
         <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-camera text-brand-primary"></i>
@@ -166,7 +160,6 @@
         <textarea id="cli-comentarios" rows="2" placeholder="Comentarios adicionales..." class="w-full p-3 border rounded-xl text-xs focus:outline-none"></textarea>
       </section>
 
-      <!-- Resumen Económico -->
       <section class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg space-y-3">
         <div class="flex justify-between items-center text-xl font-bold">
           <span>Total Cliente:</span>
@@ -249,49 +242,94 @@
       </div>
     </div>
 
-    <!-- Tablas de Cuentas -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <!-- Cuentas por Cobrar con Registro de Abonos -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <h3 class="font-bold text-xs text-slate-700 flex items-center space-x-2">
+        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+        <span>Cuentas por Cobrar (Clientes)</span>
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b text-slate-400 text-[10px] uppercase">
+              <th class="py-2">Cliente / Folio</th>
+              <th class="py-2">Total Projecto</th>
+              <th class="py-2">Cobrado</th>
+              <th class="py-2">Pendiente</th>
+              <th class="py-2 text-right">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-cobranza" class="divide-y"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Histórico General de Cotizaciones -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex justify-between items-center">
         <h3 class="font-bold text-xs text-slate-700 flex items-center space-x-2">
-          <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
-          <span>Cuentas por Cobrar (Clientes)</span>
+          <i class="fa-solid fa-list-check text-brand-primary"></i>
+          <span>Histórico de Cotizaciones de Trabajadores</span>
         </h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b text-slate-400 text-[10px] uppercase">
-                <th class="py-2">Cliente / Folio</th>
-                <th class="py-2">Total</th>
-                <th class="py-2">Pendiente</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-cobranza" class="divide-y"></tbody>
-          </table>
-        </div>
+        <button onclick="cargarDashboard()" class="text-xs bg-slate-100 p-2 rounded-lg text-slate-600 hover:bg-slate-200">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
       </div>
 
-      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-        <h3 class="font-bold text-xs text-slate-700 flex items-center space-x-2">
-          <i class="fa-solid fa-file-invoice-dollar text-rose-600"></i>
-          <span>Cuentas por Pagar (Proveedores / Fletes)</span>
-        </h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b text-slate-400 text-[10px] uppercase">
-                <th class="py-2">Concepto / Folio</th>
-                <th class="py-2">Monto Directo</th>
-                <th class="py-2">Pendiente</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-pagos" class="divide-y"></tbody>
-          </table>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b text-slate-400 uppercase font-semibold text-[10px]">
+              <th class="py-2">Folio / Fecha</th>
+              <th class="py-2">Cliente / Proyecto</th>
+              <th class="py-2">Trabajador</th>
+              <th class="py-2">Total</th>
+              <th class="py-2">Estatus</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-cotizaciones" class="divide-y"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT DE CONTROL Y NAVEGACIÓN -->
+  <!-- MODAL FLOTANTE PARA REGISTRAR PAGO/ABONO -->
+  <div id="modal-pago" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-5 space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-sm">Registrar Pago / Abono</h3>
+        <button onclick="cerrarModalPago()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Folio de Proyecto</label>
+          <input id="modal-folio" type="text" readonly class="w-full p-2.5 bg-slate-100 border rounded-xl font-bold text-slate-700">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Concepto del Pago</label>
+          <input id="modal-concepto" type="text" placeholder="Ej: Anticipo 50%, Finiquito" class="w-full p-2.5 border rounded-xl focus:outline-none">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Monto Abonado ($)</label>
+          <input id="modal-monto" type="number" step="0.01" placeholder="0.00" class="w-full p-2.5 border rounded-xl font-bold text-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Cuenta / Método de Pago</label>
+          <select id="modal-metodo" class="w-full p-2.5 border rounded-xl bg-white font-medium">
+            <option value="Banorte">Banorte (Banco)</option>
+            <option value="Efectivo">Efectivo</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btn-guardar-pago" onclick="guardarAbono()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow-lg transition">
+        Guardar Pago en Sheets
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT LÓGICA FRONTEND -->
   <script>
     let globalConfig = {};
     let globalCatalogos = { materiales: [], actividades: [] };
@@ -348,7 +386,6 @@
       document.getElementById('screen-owner-selector').classList.add('hidden');
       document.getElementById('screen-dashboard').classList.add('hidden');
       document.getElementById('screen-app').classList.remove('hidden');
-      
       document.getElementById('user-badge').innerText = usuarioActual ? usuarioActual.nombre : 'Usuario';
       
       if (usuarioActual && usuarioActual.rol === 'Dueño') {
@@ -368,7 +405,180 @@
       cargarDashboard();
     }
 
-    // COTIZADOR
+    // DASHBOARD INTERACTIVO
+    async function cargarDashboard() {
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getDashboardData' })
+        }).then(r => r.json());
+
+        if (res.exito) {
+          const kpis = res.kpis;
+          document.getElementById('kpi-monto-hoy').innerText = '$' + kpis.montoHoy.toFixed(2);
+          document.getElementById('kpi-cant-hoy').innerText = kpis.cotizacionesHoy + ' emitidas';
+          document.getElementById('kpi-por-cobrar').innerText = '$' + kpis.totalPorCobrar.toFixed(2);
+          document.getElementById('kpi-por-pagar').innerText = '$' + kpis.totalPorPagar.toFixed(2);
+          document.getElementById('kpi-total-vendido').innerText = '$' + kpis.montoVendidoTotal.toFixed(2);
+
+          // Cuentas por Cobrar
+          const tbodyCobro = document.getElementById('tabla-cobranza');
+          tbodyCobro.innerHTML = '';
+          res.cuentasPorCobrar.forEach(c => {
+            tbodyCobro.innerHTML += `
+              <tr class="py-2">
+                <td class="py-2">
+                  <span class="font-bold block text-slate-800">${c.cliente}</span>
+                  <span class="text-[10px] text-slate-400">${c.folio} - ${c.proyecto}</span>
+                </td>
+                <td class="py-2 text-slate-600">$${c.total.toFixed(2)}</td>
+                <td class="py-2 text-emerald-600">$${c.cobrado.toFixed(2)}</td>
+                <td class="py-2 font-bold text-amber-600">$${c.pendiente.toFixed(2)}</td>
+                <td class="py-2 text-right">
+                  <button onclick="abrirModalPago('${c.folio}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] shadow">
+                    + Registrar Pago
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          // Histórico Cotizaciones con Menú Estatus
+          const tbodyCot = document.getElementById('tabla-cotizaciones');
+          tbodyCot.innerHTML = '';
+          res.cotizaciones.forEach(c => {
+            tbodyCot.innerHTML += `
+              <tr class="py-2">
+                <td class="py-2">
+                  <span class="font-bold block text-slate-800">${c.folio}</span>
+                  <span class="text-[10px] text-slate-400">${c.fecha}</span>
+                </td>
+                <td class="py-2">
+                  <span class="font-medium block text-slate-700">${c.cliente}</span>
+                  <span class="text-[10px] text-slate-500">${c.proyecto}</span>
+                </td>
+                <td class="py-2 text-slate-600">${c.trabajador}</td>
+                <td class="py-2 font-bold text-slate-800">$${c.total.toFixed(2)}</td>
+                <td class="py-2">
+                  <select onchange="cambiarEstatus('${c.folio}', this.value)" class="p-1 border rounded text-[11px] font-semibold bg-white cursor-pointer">
+                    <option value="Cotizado" ${c.estatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
+                    <option value="En Proceso" ${c.estatus === 'En Proceso' ? 'selected' : ''}>En Proceso</option>
+                    <option value="Vendido" ${c.estatus === 'Vendido' ? 'selected' : ''}>Vendido</option>
+                    <option value="Rechazado" ${c.estatus === 'Rechazado' ? 'selected' : ''}>Rechazado</option>
+                  </select>
+                </td>
+              </tr>
+            `;
+          });
+
+          renderCharts(kpis);
+        }
+      } catch(e) {
+        console.error("Error al cargar Dashboard:", e);
+      }
+    }
+
+    async function cambiarEstatus(folio, nuevoEstatus) {
+      await fetch(GAS_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'actualizarEstatus', folio: folio, nuevoEstatus: nuevoEstatus })
+      });
+      cargarDashboard();
+    }
+
+    function abrirModalPago(folio) {
+      document.getElementById('modal-folio').value = folio;
+      document.getElementById('modal-concepto').value = '';
+      document.getElementById('modal-monto').value = '';
+      document.getElementById('modal-pago').classList.remove('hidden');
+    }
+
+    function cerrarModalPago() {
+      document.getElementById('modal-pago').classList.add('hidden');
+    }
+
+    async function guardarAbono() {
+      const folio = document.getElementById('modal-folio').value;
+      const concepto = document.getElementById('modal-concepto').value || 'Abono / Anticipo';
+      const monto = parseFloat(document.getElementById('modal-monto').value) || 0;
+      const metodo = document.getElementById('modal-metodo').value;
+
+      if (monto <= 0) {
+        alert("Ingresa un monto válido mayor a $0.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-guardar-pago');
+      btn.disabled = true;
+      btn.innerText = 'Guardando pago...';
+
+      const movimiento = {
+        folio: folio,
+        tipo: 'Ingreso',
+        concepto: concepto,
+        monto: monto,
+        metodo: metodo,
+        registradoPor: usuarioActual ? usuarioActual.nombre : 'Dueño'
+      };
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'registrarMovimiento', movimiento: movimiento })
+        }).then(r => r.json());
+
+        btn.disabled = false;
+        btn.innerText = 'Guardar Pago en Sheets';
+
+        if (res.exito) {
+          cerrarModalPago();
+          cargarDashboard();
+        } else {
+          alert("Error: " + res.mensaje);
+        }
+      } catch(e) {
+        btn.disabled = false;
+        btn.innerText = 'Guardar Pago en Sheets';
+        alert("Error de conexión.");
+      }
+    }
+
+    function renderCharts(kpis) {
+      const ctxFlujo = document.getElementById('chartFlujoCaja').getContext('2d');
+      if (chartFlujo) chartFlujo.destroy();
+      chartFlujo = new Chart(ctxFlujo, {
+        type: 'doughnut',
+        data: {
+          labels: ['Banorte', 'Efectivo'],
+          datasets: [{
+            data: [kpis.saldoBanorte, kpis.saldoEfectivo],
+            backgroundColor: ['#1E3A8A', '#F59E0B']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const ctxBal = document.getElementById('chartBalance').getContext('2d');
+      if (chartBal) chartBal.destroy();
+      chartBal = new Chart(ctxBal, {
+        type: 'bar',
+        data: {
+          labels: ['Por Cobrar', 'Por Pagar'],
+          datasets: [{
+            label: 'Monto ($)',
+            data: [kpis.totalPorCobrar, kpis.totalPorPagar],
+            backgroundColor: ['#059669', '#E11D48']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // FUNCIONES DEL COTIZADOR
     function agregarFilaMaterial() {
       const container = document.getElementById('lista-materiales');
       let options = '<option value="">Seleccionar material...</option>';
@@ -557,94 +767,6 @@
         btn.innerText = 'Guardar Cotización';
         alert('Error enviando la cotización.');
       }
-    }
-
-    // DASHBOARD
-    async function cargarDashboard() {
-      try {
-        const res = await fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'getDashboardData' })
-        }).then(r => r.json());
-
-        if (res.exito) {
-          const kpis = res.kpis;
-          document.getElementById('kpi-monto-hoy').innerText = '$' + kpis.montoHoy.toFixed(2);
-          document.getElementById('kpi-cant-hoy').innerText = kpis.cotizacionesHoy + ' emitidas';
-          document.getElementById('kpi-por-cobrar').innerText = '$' + kpis.totalPorCobrar.toFixed(2);
-          document.getElementById('kpi-por-pagar').innerText = '$' + kpis.totalPorPagar.toFixed(2);
-          document.getElementById('kpi-total-vendido').innerText = '$' + kpis.montoVendidoTotal.toFixed(2);
-
-          const tbodyCobro = document.getElementById('tabla-cobranza');
-          tbodyCobro.innerHTML = '';
-          res.cuentasPorCobrar.forEach(c => {
-            tbodyCobro.innerHTML += `
-              <tr class="py-2">
-                <td class="py-2">
-                  <span class="font-bold block text-slate-800">${c.cliente}</span>
-                  <span class="text-[10px] text-slate-400">${c.folio} - ${c.proyecto}</span>
-                </td>
-                <td class="py-2 text-slate-600">$${c.total.toFixed(2)}</td>
-                <td class="py-2 font-bold text-emerald-600">$${c.pendiente.toFixed(2)}</td>
-              </tr>
-            `;
-          });
-
-          const tbodyPago = document.getElementById('tabla-pagos');
-          tbodyPago.innerHTML = '';
-          res.cuentasPorPagar.forEach(p => {
-            tbodyPago.innerHTML += `
-              <tr class="py-2">
-                <td class="py-2">
-                  <span class="font-bold block text-slate-800">${p.concepto}</span>
-                  <span class="text-[10px] text-slate-400">${p.folio}</span>
-                </td>
-                <td class="py-2 text-slate-600">$${p.montoTotal.toFixed(2)}</td>
-                <td class="py-2 font-bold text-rose-600">$${p.pendiente.toFixed(2)}</td>
-              </tr>
-            `;
-          });
-
-          renderCharts(kpis);
-        }
-      } catch(e) {
-        console.error("Error al cargar Dashboard:", e);
-      }
-    }
-
-    function renderCharts(kpis) {
-      const ctxFlujo = document.getElementById('chartFlujoCaja').getContext('2d');
-      if (chartFlujo) chartFlujo.destroy();
-      chartFlujo = new Chart(ctxFlujo, {
-        type: 'doughnut',
-        data: {
-          labels: ['Banorte', 'Efectivo'],
-          datasets: [{
-            data: [kpis.saldoBanorte, kpis.saldoEfectivo],
-            backgroundColor: ['#1E3A8A', '#F59E0B']
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-
-      const ctxBal = document.getElementById('chartBalance').getContext('2d');
-      if (chartBal) chartBal.destroy();
-      chartBal = new Chart(ctxBal, {
-        type: 'bar',
-        data: {
-          labels: ['Por Cobrar', 'Por Pagar'],
-          datasets: [{
-            label: 'Monto ($)',
-            data: [kpis.totalPorCobrar, kpis.totalPorPagar],
-            backgroundColor: ['#059669', '#E11D48']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
-        }
-      });
     }
   </script>
 </body>
