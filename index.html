@@ -22,33 +22,184 @@
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxFT86cjzwteLEN9MxdhhHqRJWRPCDIvMbh3HMYc7n5Qf3sYp83825oSA1c3WHwsBfD3w/exec";
   </script>
 
-  <!-- PANTALLA LOGIN Y VISTA TRABAJADOR SE MANTIENEN IGUAL... -->
+  <!-- PANTALLA 1: LOGIN POR PIN -->
   <div id="screen-login" class="min-h-screen flex flex-col justify-center items-center px-4">
     <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
-      <h1 id="app-title" class="text-xl font-bold text-slate-800">Cotizador Express</h1>
-      <p class="text-xs text-slate-500">Ingresa tu PIN de acceso</p>
-      <input id="pin-input" type="password" maxlength="6" inputmode="numeric" placeholder="••••" 
-             class="w-full text-center text-3xl font-bold py-3 border-2 border-slate-200 rounded-xl focus:outline-none">
-      <button onclick="handleLogin()" id="btn-login" class="w-full bg-brand-primary text-white py-3.5 rounded-xl font-semibold shadow-lg">
-        Ingresar
-      </button>
-      <p id="login-error" class="text-xs text-red-500 hidden"></p>
+      <div id="logo-container" class="flex justify-center mb-2">
+        <div class="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center text-slate-400">
+          <i class="fa-solid fa-screwdriver-wrench text-2xl"></i>
+        </div>
+      </div>
+      <div>
+        <h1 id="app-title" class="text-xl font-bold text-slate-800">Cotizador Express</h1>
+        <p class="text-xs text-slate-500 mt-1">Ingresa tu PIN de acceso</p>
+      </div>
+      <div class="space-y-4">
+        <input id="pin-input" type="password" maxlength="6" pattern="\d*" inputmode="numeric" placeholder="••••" 
+               class="w-full text-center text-3xl tracking-widest font-bold py-3 border-2 border-slate-200 rounded-xl focus:border-brand-primary focus:outline-none transition">
+        <button onclick="handleLogin()" id="btn-login" class="w-full bg-brand-primary text-white py-3.5 rounded-xl font-semibold shadow-lg hover:opacity-90 transition active:scale-95">
+          Ingresar
+        </button>
+      </div>
+      <p id="login-error" class="text-xs text-red-500 font-medium hidden"></p>
     </div>
   </div>
 
-  <!-- PANTALLA DASHBOARD DEL DUEÑO (ACTUALIZADA CON CHART.JS Y CUENTAS) -->
+  <!-- PANTALLA 1.5: SELECTOR DE MÓDULO (EXCLUSIVO PARA DUEÑO) -->
+  <div id="screen-owner-selector" class="hidden min-h-screen flex flex-col justify-center items-center px-4">
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
+      <div>
+        <div class="w-12 h-12 bg-indigo-100 text-brand-primary rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fa-solid fa-user-tie text-xl"></i>
+        </div>
+        <h2 class="text-lg font-bold text-slate-800">Bienvenido, Dueño</h2>
+        <p class="text-xs text-slate-500 mt-1">¿Qué módulo deseas abrir hoy?</p>
+      </div>
+
+      <div class="space-y-3">
+        <button onclick="abrirCotizador()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-2xl font-bold shadow-md transition active:scale-95 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-file-circle-plus text-xl"></i>
+            <div class="text-left">
+              <p class="text-sm">Ir al Cotizador</p>
+              <p class="text-[10px] text-emerald-100 font-normal">Crear nuevo presupuesto</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+
+        <button onclick="abrirDashboard()" class="w-full bg-slate-900 hover:bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-md transition active:scale-95 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-chart-line text-xl text-amber-400"></i>
+            <div class="text-left">
+              <p class="text-sm">Dashboard Financiero</p>
+              <p class="text-[10px] text-slate-400 font-normal">Ventas, KPIs y Cuentas</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+
+      <button onclick="location.reload()" class="text-xs text-slate-400 hover:text-slate-600 font-medium">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2: COTIZADOR MÓVIL (TRABAJADORES Y DUEÑO) -->
+  <div id="screen-app" class="hidden max-w-md mx-auto">
+    <header class="bg-brand-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-2xl">
+      <span class="font-bold text-lg" id="nav-brand-name">Cotizador</span>
+      <div class="flex items-center space-x-2">
+        <!-- Botón para cambiar a Dashboard si es el Dueño -->
+        <button id="btn-switch-dashboard" onclick="abrirDashboard()" class="hidden text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-2.5 py-1 rounded-full transition flex items-center space-x-1">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
+        <button onclick="location.reload()" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="p-4 space-y-5">
+      <!-- 1. Datos del Cliente -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-user text-brand-primary"></i>
+          <span>1. Datos del Cliente</span>
+        </h2>
+        <div class="space-y-2 text-xs">
+          <input id="cli-nombre" type="text" placeholder="Nombre completo *" class="w-full p-3 border rounded-xl focus:outline-none">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="cli-tel" type="tel" placeholder="Teléfono" class="p-3 border rounded-xl focus:outline-none">
+            <input id="cli-correo" type="email" placeholder="Correo" class="p-3 border rounded-xl focus:outline-none">
+          </div>
+          <input id="cli-dir" type="text" placeholder="Dirección del proyecto" class="w-full p-3 border rounded-xl focus:outline-none">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="cli-proyecto" type="text" placeholder="Tipo de proyecto (Ej: Portón)" class="p-3 border rounded-xl focus:outline-none">
+            <input id="cli-medidas" type="text" placeholder="Medidas (Ej: 3.5m x 2.1m)" class="p-3 border rounded-xl focus:outline-none">
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Materiales -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-cubes text-brand-primary"></i>
+          <span>2. Materiales Necesarios</span>
+        </h2>
+        <div id="lista-materiales" class="space-y-2"></div>
+        <button onclick="agregarFilaMaterial()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition active:scale-95 flex items-center justify-center space-x-2 text-xs mt-2">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>+ Agregar otro material</span>
+        </button>
+      </section>
+
+      <!-- 3. Actividades -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-screwdriver-wrench text-brand-primary"></i>
+          <span>3. Actividades / Mano de Obra</span>
+        </h2>
+        <div id="lista-actividades" class="space-y-2"></div>
+        <button onclick="agregarFilaActividad()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition active:scale-95 flex items-center justify-center space-x-2 text-xs mt-2">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>+ Agregar actividad</span>
+        </button>
+      </section>
+
+      <!-- 4. Fotos -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-camera text-brand-primary"></i>
+          <span>4. Fotos del Área</span>
+        </h2>
+        <label for="input-fotos" class="w-full bg-slate-100 border-2 border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-200 transition text-xs">
+          <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+          <span class="font-semibold text-slate-600">Tomar foto o subir imágenes</span>
+        </label>
+        <input id="input-fotos" type="file" accept="image/*" multiple capture="environment" class="hidden" onchange="previewFotos(event)">
+        <div id="preview-container" class="grid grid-cols-4 gap-2 pt-2"></div>
+        <textarea id="cli-comentarios" rows="2" placeholder="Comentarios adicionales..." class="w-full p-3 border rounded-xl text-xs focus:outline-none"></textarea>
+      </section>
+
+      <!-- Resumen Económico -->
+      <section class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg space-y-3">
+        <div class="flex justify-between items-center text-xl font-bold">
+          <span>Total Cliente:</span>
+          <span id="lbl-total-cliente" class="text-emerald-400">$0.00</span>
+        </div>
+      </section>
+
+      <button id="btn-guardar" onclick="enviarCotizacion()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition active:scale-95 flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Guardar Cotización</span>
+      </button>
+    </main>
+  </div>
+
+  <!-- PANTALLA 3: DASHBOARD DEL DUEÑO -->
   <div id="screen-dashboard" class="hidden max-w-5xl mx-auto p-4 space-y-6">
     <header class="bg-slate-900 text-white p-4 rounded-2xl flex justify-between items-center shadow-lg">
       <div>
         <h1 class="font-bold text-lg">Panel de Control Financiero</h1>
         <p class="text-xs text-slate-400">Resumen de Ventas, Cuentas por Cobrar y Pagar</p>
       </div>
-      <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold">
-        <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir
-      </button>
+      <div class="flex items-center space-x-2">
+        <button onclick="abrirCotizador()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center space-x-1">
+          <i class="fa-solid fa-calculator"></i>
+          <span>Cotizador</span>
+        </button>
+        <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold">
+          <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir
+        </button>
+      </div>
     </header>
 
-    <!-- Tarjetas KPIs Principales -->
+    <!-- Tarjetas KPIs -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
         <p class="text-xs text-slate-500 font-medium">Cotizaciones Hoy</p>
@@ -75,7 +226,7 @@
       </div>
     </div>
 
-    <!-- Sección de Gráficas Visuales (Chart.js) -->
+    <!-- Gráficas Chart.js -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
         <h3 class="font-bold text-xs text-slate-700 mb-3 flex items-center space-x-2">
@@ -98,9 +249,8 @@
       </div>
     </div>
 
-    <!-- Tablas de Cuentas por Cobrar y por Pagar -->
+    <!-- Tablas de Cuentas -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Cuentas por Cobrar -->
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
         <h3 class="font-bold text-xs text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
@@ -120,7 +270,6 @@
         </div>
       </div>
 
-      <!-- Cuentas por Pagar -->
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
         <h3 class="font-bold text-xs text-slate-700 flex items-center space-x-2">
           <i class="fa-solid fa-file-invoice-dollar text-rose-600"></i>
@@ -142,82 +291,328 @@
     </div>
   </div>
 
+  <!-- SCRIPT DE CONTROL Y NAVEGACIÓN -->
   <script>
+    let globalConfig = {};
+    let globalCatalogos = { materiales: [], actividades: [] };
+    let usuarioActual = null;
+    let fotosBase64 = [];
     let chartFlujo = null;
     let chartBal = null;
 
+    window.onload = async function() {
+      try {
+        const config = await fetch(GAS_API_URL + '?action=getConfig').then(r => r.json());
+        globalConfig = config;
+        if(config.nombre_empresa) document.getElementById('app-title').innerText = config.nombre_empresa;
+        
+        const catalogos = await fetch(GAS_API_URL + '?action=getCatalogos').then(r => r.json());
+        globalCatalogos = catalogos;
+      } catch(e) {
+        console.error("Error al cargar catalogos:", e);
+      }
+    };
+
     async function handleLogin() {
       const pin = document.getElementById('pin-input').value;
-      const res = await fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'login', pin: pin })
-      }).then(r => r.json());
+      const btn = document.getElementById('btn-login');
+      btn.innerText = 'Verificando...';
 
-      if (res.exito) {
-        document.getElementById('screen-login').classList.add('hidden');
-        if (res.usuario.rol === 'Dueño') {
-          document.getElementById('screen-dashboard').classList.remove('hidden');
-          cargarDashboard();
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', pin: pin })
+        }).then(r => r.json());
+
+        btn.innerText = 'Ingresar';
+        if (res.exito) {
+          usuarioActual = res.usuario;
+          document.getElementById('screen-login').classList.add('hidden');
+
+          if (usuarioActual.rol === 'Dueño') {
+            document.getElementById('screen-owner-selector').classList.remove('hidden');
+          } else {
+            abrirCotizador();
+          }
+        } else {
+          document.getElementById('login-error').innerText = res.mensaje;
+          document.getElementById('login-error').classList.remove('hidden');
         }
-      } else {
-        document.getElementById('login-error').innerText = res.mensaje;
-        document.getElementById('login-error').classList.remove('hidden');
+      } catch(e) {
+        btn.innerText = 'Ingresar';
+        alert("Error de conexión con la base de datos.");
       }
     }
 
+    function abrirCotizador() {
+      document.getElementById('screen-owner-selector').classList.add('hidden');
+      document.getElementById('screen-dashboard').classList.add('hidden');
+      document.getElementById('screen-app').classList.remove('hidden');
+      
+      document.getElementById('user-badge').innerText = usuarioActual ? usuarioActual.nombre : 'Usuario';
+      
+      if (usuarioActual && usuarioActual.rol === 'Dueño') {
+        document.getElementById('btn-switch-dashboard').classList.remove('hidden');
+      }
+
+      if (document.getElementById('lista-materiales').children.length === 0) {
+        agregarFilaMaterial();
+        agregarFilaActividad();
+      }
+    }
+
+    function abrirDashboard() {
+      document.getElementById('screen-owner-selector').classList.add('hidden');
+      document.getElementById('screen-app').classList.add('hidden');
+      document.getElementById('screen-dashboard').classList.remove('hidden');
+      cargarDashboard();
+    }
+
+    // COTIZADOR
+    function agregarFilaMaterial() {
+      const container = document.getElementById('lista-materiales');
+      let options = '<option value="">Seleccionar material...</option>';
+      globalCatalogos.materiales.forEach(m => {
+        options += `<option value="${m.id}">${m.nombre} ($${m.precioUnitario}/tramo de ${m.largoTramo}m)</option>`;
+      });
+
+      const div = document.createElement('div');
+      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs border border-slate-200';
+      div.innerHTML = `
+        <select class="col-span-7 p-2 border rounded-lg bg-white sel-mat" onchange="calcularTotales()">${options}</select>
+        <input type="number" placeholder="Mts" class="col-span-3 p-2 border rounded-lg text-center input-cant-mat" oninput="calcularTotales()">
+        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(div);
+    }
+
+    function agregarFilaActividad() {
+      const container = document.getElementById('lista-actividades');
+      let options = '<option value="">Seleccionar actividad...</option>';
+      globalCatalogos.actividades.forEach(a => {
+        options += `<option value="${a.id}">${a.nombre} ($${a.costoBase})</option>`;
+      });
+
+      const div = document.createElement('div');
+      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs border border-slate-200';
+      div.innerHTML = `
+        <select class="col-span-7 p-2 border rounded-lg bg-white sel-act" onchange="calcularTotales()">${options}</select>
+        <input type="number" value="1" placeholder="Cant" class="col-span-3 p-2 border rounded-lg text-center input-cant-act" oninput="calcularTotales()">
+        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(div);
+    }
+
+    function previewFotos(event) {
+      const files = event.target.files;
+      const previewContainer = document.getElementById('preview-container');
+      previewContainer.innerHTML = '';
+      fotosBase64 = [];
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotosBase64.push({ data: e.target.result, name: file.name });
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.className = 'w-full h-16 object-cover rounded-lg border border-slate-300';
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function calcularTotales() {
+      let costoMat = 0;
+      let costoAct = 0;
+
+      document.querySelectorAll('#lista-materiales > div').forEach(f => {
+        const idMat = f.querySelector('.sel-mat').value;
+        const cantMetros = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
+        if (idMat && cantMetros > 0) {
+          const item = globalCatalogos.materiales.find(m => m.id === idMat);
+          if (item) {
+            const tramos = Math.ceil(cantMetros / item.largoTramo);
+            costoMat += tramos * item.precioUnitario;
+          }
+        }
+      });
+
+      document.querySelectorAll('#lista-actividades > div').forEach(f => {
+        const idAct = f.querySelector('.sel-act').value;
+        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
+        if (idAct && cant > 0) {
+          const item = globalCatalogos.actividades.find(a => a.id === idAct);
+          if (item) {
+            costoAct += cant * item.costoBase;
+          }
+        }
+      });
+
+      const costoDirecto = costoMat + costoAct;
+      const pctMargen = parseFloat(globalConfig['margen_ganancia_defecto_%']) || 35;
+      const totalCliente = costoDirecto * (1 + pctMargen / 100);
+
+      document.getElementById('lbl-total-cliente').innerText = '$' + totalCliente.toFixed(2);
+    }
+
+    async function enviarCotizacion() {
+      const nombreCli = document.getElementById('cli-nombre').value;
+      if (!nombreCli) {
+        alert('Por favor ingresa el nombre del cliente.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-guardar');
+      btn.disabled = true;
+      btn.innerText = 'Guardando...';
+
+      const itemsMateriales = [];
+      document.querySelectorAll('#lista-materiales > div').forEach(f => {
+        const id = f.querySelector('.sel-mat').value;
+        const cant = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
+        if(id && cant > 0) {
+          const mat = globalCatalogos.materiales.find(m => m.id === id);
+          const tramos = Math.ceil(cant / mat.largoTramo);
+          itemsMateriales.push({
+            id: mat.id,
+            nombre: mat.nombre,
+            cantidadMetros: cant,
+            tramosCalculados: tramos,
+            precioUnitarioTramo: mat.precioUnitario,
+            subtotal: tramos * mat.precioUnitario
+          });
+        }
+      });
+
+      const itemsActividades = [];
+      document.querySelectorAll('#lista-actividades > div').forEach(f => {
+        const id = f.querySelector('.sel-act').value;
+        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
+        if(id && cant > 0) {
+          const act = globalCatalogos.actividades.find(a => a.id === id);
+          itemsActividades.push({
+            id: act.id,
+            nombre: act.nombre,
+            cantidad: cant,
+            costoBase: act.costoBase,
+            subtotal: cant * act.costoBase
+          });
+        }
+      });
+
+      const costoMat = itemsMateriales.reduce((acc, i) => acc + i.subtotal, 0);
+      const costoAct = itemsActividades.reduce((acc, i) => acc + i.subtotal, 0);
+      const costoDirecto = costoMat + costoAct;
+      const pctMargen = parseFloat(globalConfig['margen_ganancia_defecto_%']) || 35;
+      const montoGanancia = costoDirecto * (pctMargen / 100);
+      const totalCliente = costoDirecto + montoGanancia;
+
+      const medidas = document.getElementById('cli-medidas').value;
+      const tipoProyecto = document.getElementById('cli-proyecto').value;
+
+      const payload = {
+        config: globalConfig,
+        idTrabajador: usuarioActual.id,
+        cliente: {
+          nombre: nombreCli,
+          telefono: document.getElementById('cli-tel').value,
+          correo: document.getElementById('cli-correo').value,
+          direccion: document.getElementById('cli-dir').value,
+          tipoProyecto: medidas ? `${tipoProyecto} (${medidas})` : tipoProyecto
+        },
+        itemsMateriales: itemsMateriales,
+        itemsActividades: itemsActividades,
+        totales: {
+          costoMateriales: costoMat,
+          costoActividades: costoAct,
+          costoDirectoTotal: costoDirecto,
+          margenGananciaPorcentaje: pctMargen,
+          montoGanancia: montoGanancia,
+          subtotalSinImpuesto: totalCliente,
+          impuestoMonto: 0,
+          totalCliente: totalCliente
+        },
+        comentarios: document.getElementById('cli-comentarios').value,
+        fotos: fotosBase64
+      };
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'guardarCotizacion', payload: payload })
+        }).then(r => r.json());
+
+        btn.disabled = false;
+        btn.innerText = 'Guardar Cotización';
+
+        if(res.exito) {
+          alert('¡Cotización guardada con éxito! Folio: ' + res.folio);
+          location.reload();
+        } else {
+          alert('Error al guardar: ' + res.mensaje);
+        }
+      } catch(e) {
+        btn.disabled = false;
+        btn.innerText = 'Guardar Cotización';
+        alert('Error enviando la cotización.');
+      }
+    }
+
+    // DASHBOARD
     async function cargarDashboard() {
-      const res = await fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'getDashboardData' })
-      }).then(r => r.json());
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getDashboardData' })
+        }).then(r => r.json());
 
-      if (res.exito) {
-        const kpis = res.kpis;
-        document.getElementById('kpi-monto-hoy').innerText = '$' + kpis.montoHoy.toFixed(2);
-        document.getElementById('kpi-cant-hoy').innerText = kpis.cotizacionesHoy + ' emitidas';
-        document.getElementById('kpi-por-cobrar').innerText = '$' + kpis.totalPorCobrar.toFixed(2);
-        document.getElementById('kpi-por-pagar').innerText = '$' + kpis.totalPorPagar.toFixed(2);
-        document.getElementById('kpi-total-vendido').innerText = '$' + kpis.montoVendidoTotal.toFixed(2);
+        if (res.exito) {
+          const kpis = res.kpis;
+          document.getElementById('kpi-monto-hoy').innerText = '$' + kpis.montoHoy.toFixed(2);
+          document.getElementById('kpi-cant-hoy').innerText = kpis.cotizacionesHoy + ' emitidas';
+          document.getElementById('kpi-por-cobrar').innerText = '$' + kpis.totalPorCobrar.toFixed(2);
+          document.getElementById('kpi-por-pagar').innerText = '$' + kpis.totalPorPagar.toFixed(2);
+          document.getElementById('kpi-total-vendido').innerText = '$' + kpis.montoVendidoTotal.toFixed(2);
 
-        // Llenar Cuentas por Cobrar
-        const tbodyCobro = document.getElementById('tabla-cobranza');
-        tbodyCobro.innerHTML = '';
-        res.cuentasPorCobrar.forEach(c => {
-          tbodyCobro.innerHTML += `
-            <tr class="py-2">
-              <td class="py-2">
-                <span class="font-bold block text-slate-800">${c.cliente}</span>
-                <span class="text-[10px] text-slate-400">${c.folio} - ${c.proyecto}</span>
-              </td>
-              <td class="py-2 text-slate-600">$${c.total.toFixed(2)}</td>
-              <td class="py-2 font-bold text-emerald-600">$${c.pendiente.toFixed(2)}</td>
-            </tr>
-          `;
-        });
+          const tbodyCobro = document.getElementById('tabla-cobranza');
+          tbodyCobro.innerHTML = '';
+          res.cuentasPorCobrar.forEach(c => {
+            tbodyCobro.innerHTML += `
+              <tr class="py-2">
+                <td class="py-2">
+                  <span class="font-bold block text-slate-800">${c.cliente}</span>
+                  <span class="text-[10px] text-slate-400">${c.folio} - ${c.proyecto}</span>
+                </td>
+                <td class="py-2 text-slate-600">$${c.total.toFixed(2)}</td>
+                <td class="py-2 font-bold text-emerald-600">$${c.pendiente.toFixed(2)}</td>
+              </tr>
+            `;
+          });
 
-        // Llenar Cuentas por Pagar
-        const tbodyPago = document.getElementById('tabla-pagos');
-        tbodyPago.innerHTML = '';
-        res.cuentasPorPagar.forEach(p => {
-          tbodyPago.innerHTML += `
-            <tr class="py-2">
-              <td class="py-2">
-                <span class="font-bold block text-slate-800">${p.concepto}</span>
-                <span class="text-[10px] text-slate-400">${p.folio}</span>
-              </td>
-              <td class="py-2 text-slate-600">$${p.montoTotal.toFixed(2)}</td>
-              <td class="py-2 font-bold text-rose-600">$${p.pendiente.toFixed(2)}</td>
-            </tr>
-          `;
-        });
+          const tbodyPago = document.getElementById('tabla-pagos');
+          tbodyPago.innerHTML = '';
+          res.cuentasPorPagar.forEach(p => {
+            tbodyPago.innerHTML += `
+              <tr class="py-2">
+                <td class="py-2">
+                  <span class="font-bold block text-slate-800">${p.concepto}</span>
+                  <span class="text-[10px] text-slate-400">${p.folio}</span>
+                </td>
+                <td class="py-2 text-slate-600">$${p.montoTotal.toFixed(2)}</td>
+                <td class="py-2 font-bold text-rose-600">$${p.pendiente.toFixed(2)}</td>
+              </tr>
+            `;
+          });
 
-        // Renderizar Gráficas
-        renderCharts(kpis);
+          renderCharts(kpis);
+        }
+      } catch(e) {
+        console.error("Error al cargar Dashboard:", e);
       }
     }
 
     function renderCharts(kpis) {
-      // Gráfica de Flujo de Caja (Banorte vs Efectivo)
       const ctxFlujo = document.getElementById('chartFlujoCaja').getContext('2d');
       if (chartFlujo) chartFlujo.destroy();
       chartFlujo = new Chart(ctxFlujo, {
@@ -232,7 +627,6 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
-      // Gráfica de Balance (Por Cobrar vs Por Pagar)
       const ctxBal = document.getElementById('chartBalance').getContext('2d');
       if (chartBal) chartBal.destroy();
       chartBal = new Chart(ctxBal, {
