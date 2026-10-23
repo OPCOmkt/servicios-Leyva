@@ -17,7 +17,13 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased pb-10">
 
-  <!-- PANTALLA 1: LOGIN -->
+  <!-- CONFIGURACIÓN DE API -->
+  <script>
+    // Asegúrate de incluir tu URL desplegada de Google Apps Script
+    const GAS_API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT"; 
+  </script>
+
+  <!-- PANTALLA 1: LOGIN POR PIN -->
   <div id="screen-login" class="min-h-screen flex flex-col justify-center items-center px-4">
     <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
       <div id="logo-container" class="flex justify-center mb-2">
@@ -40,55 +46,117 @@
     </div>
   </div>
 
-  <!-- PANTALLA 2: CAPTURA -->
+  <!-- PANTALLA 2: CAPTURA MÓVIL -->
   <div id="screen-app" class="hidden max-w-md mx-auto">
     <header class="bg-brand-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-2xl">
       <span class="font-bold text-lg" id="nav-brand-name">Cotizador</span>
-      <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
+      <div class="flex items-center space-x-2">
+        <span id="user-badge" class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Trabajador</span>
+        <button onclick="location.reload()" class="text-white/80 hover:text-white p-1">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
     </header>
 
     <main class="p-4 space-y-5">
+      <!-- 1. Datos del Cliente -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <h2 class="text-sm font-bold text-slate-700">1. Datos del Cliente</h2>
-        <input id="cli-nombre" type="text" placeholder="Nombre completo *" class="w-full p-3 border rounded-xl text-sm">
-        <div class="grid grid-cols-2 gap-2">
-          <input id="cli-tel" type="tel" placeholder="Teléfono" class="p-3 border rounded-xl text-sm">
-          <input id="cli-correo" type="email" placeholder="Correo" class="p-3 border rounded-xl text-sm">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-user text-brand-primary"></i>
+          <span>1. Datos del Cliente</span>
+        </h2>
+        <div class="space-y-2 text-xs">
+          <input id="cli-nombre" type="text" placeholder="Nombre completo *" class="w-full p-3 border border-slate-200 rounded-xl focus:outline-none">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="cli-tel" type="tel" placeholder="Teléfono" class="p-3 border border-slate-200 rounded-xl focus:outline-none">
+            <input id="cli-correo" type="email" placeholder="Correo" class="p-3 border border-slate-200 rounded-xl focus:outline-none">
+          </div>
+          <input id="cli-dir" type="text" placeholder="Dirección del proyecto" class="w-full p-3 border border-slate-200 rounded-xl focus:outline-none">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="cli-proyecto" type="text" placeholder="Tipo de proyecto (Ej: Portón)" class="p-3 border border-slate-200 rounded-xl focus:outline-none">
+            <input id="cli-medidas" type="text" placeholder="Medidas (Ej: 3.5m x 2.1m)" class="p-3 border border-slate-200 rounded-xl focus:outline-none">
+          </div>
         </div>
-        <input id="cli-proyecto" type="text" placeholder="Tipo de proyecto" class="w-full p-3 border rounded-xl text-sm">
       </section>
 
+      <!-- 2. Materiales -->
       <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex justify-between items-center">
-          <h2 class="text-sm font-bold text-slate-700">2. Materiales</h2>
-          <button onclick="agregarFilaMaterial()" class="text-xs bg-slate-100 font-semibold px-3 py-1.5 rounded-lg">+ Agregar</button>
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-cubes text-brand-primary"></i>
+          <span>2. Materiales Necesarios</span>
+        </h2>
+        
+        <div id="lista-materiales" class="space-y-2">
+          <!-- Las filas de materiales se insertan dinámicamente -->
         </div>
-        <div id="lista-materiales" class="space-y-2"></div>
+
+        <button onclick="agregarFilaMaterial()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition active:scale-95 flex items-center justify-center space-x-2 text-xs mt-2">
+          <i class="fa-solid fa-circle-plus text-sm"></i>
+          <span>+ Agregar otro material</span>
+        </button>
       </section>
 
+      <!-- 3. Actividades / Servicios -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-screwdriver-wrench text-brand-primary"></i>
+          <span>3. Actividades / Mano de Obra</span>
+        </h2>
+        
+        <div id="lista-actividades" class="space-y-2">
+          <!-- Las filas de actividades se insertan dinámicamente -->
+        </div>
+
+        <button onclick="agregarFilaActividad()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition active:scale-95 flex items-center justify-center space-x-2 text-xs mt-2">
+          <i class="fa-solid fa-circle-plus text-sm"></i>
+          <span>+ Agregar actividad</span>
+        </button>
+      </section>
+
+      <!-- 4. Evidencia Fotográfica (Fotos / Cámara) -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-sm font-bold text-slate-700 flex items-center space-x-2">
+          <i class="fa-solid fa-camera text-brand-primary"></i>
+          <span>4. Fotos del Área</span>
+        </h2>
+        <div class="space-y-2 text-xs">
+          <label for="input-fotos" class="w-full bg-slate-100 border-2 border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-200 transition">
+            <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+            <span class="font-semibold text-slate-600">Tomar foto o subir imágenes</span>
+            <span class="text-[10px] text-slate-400">Puedes seleccionar varias fotos</span>
+          </label>
+          <input id="input-fotos" type="file" accept="image/*" multiple capture="environment" class="hidden" onchange="previewFotos(event)">
+          
+          <!-- Vista previa de imágenes seleccionadas -->
+          <div id="preview-container" class="grid grid-cols-4 gap-2 pt-2"></div>
+        </div>
+        <textarea id="cli-comentarios" rows="2" placeholder="Comentarios adicionales o detalles del proyecto..." class="w-full p-3 border border-slate-200 rounded-xl text-xs focus:outline-none"></textarea>
+      </section>
+
+      <!-- Resumen Económico -->
       <section class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg space-y-3">
-        <div class="flex justify-between text-xl font-bold">
+        <div class="flex justify-between items-center text-xl font-bold">
           <span>Total Cliente:</span>
           <span id="lbl-total-cliente" class="text-emerald-400">$0.00</span>
         </div>
       </section>
 
-      <button id="btn-guardar" onclick="enviarCotizacion()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg">
-        Guardar Cotización
+      <!-- Botón de Envío -->
+      <button id="btn-guardar" onclick="enviarCotizacion()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition active:scale-95 flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Guardar Cotización</span>
       </button>
     </main>
   </div>
 
   <script>
-    // INSERTA AQUÍ TU URL DE GOOGLE APPS SCRIPT
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxFT86cjzwteLEN9MxdhhHqRJWRPCDIvMbh3HMYc7n5Qf3sYp83825oSA1c3WHwsBfD3w/exec";
-
     let globalConfig = {};
     let globalCatalogos = { materiales: [], actividades: [] };
     let usuarioActual = null;
+    let fotosBase64 = [];
 
     window.onload = async function() {
-      if(GAS_API_URL.includes("PEGA_AQUI")) return;
+      if(!GAS_API_URL || GAS_API_URL.includes("PEGA_AQUI")) return;
       try {
         const config = await fetch(GAS_API_URL + '?action=getConfig').then(r => r.json());
         globalConfig = config;
@@ -117,14 +185,16 @@
           usuarioActual = res.usuario;
           document.getElementById('screen-login').classList.add('hidden');
           document.getElementById('screen-app').classList.remove('hidden');
+          document.getElementById('user-badge').innerText = usuarioActual.nombre;
           agregarFilaMaterial();
+          agregarFilaActividad();
         } else {
           document.getElementById('login-error').innerText = res.mensaje;
           document.getElementById('login-error').classList.remove('hidden');
         }
       } catch(e) {
         btn.innerText = 'Ingresar';
-        alert("Error al conectar con la base de datos.");
+        alert("Error de conexión con la base de datos.");
       }
     }
 
@@ -132,11 +202,11 @@
       const container = document.getElementById('lista-materiales');
       let options = '<option value="">Seleccionar material...</option>';
       globalCatalogos.materiales.forEach(m => {
-        options += `<option value="${m.id}">${m.nombre} ($${m.precioUnitario})</option>`;
+        options += `<option value="${m.id}">${m.nombre} ($${m.precioUnitario}/tramo de ${m.largoTramo}m)</option>`;
       });
 
       const div = document.createElement('div');
-      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs';
+      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs border border-slate-200';
       div.innerHTML = `
         <select class="col-span-7 p-2 border rounded-lg bg-white sel-mat" onchange="calcularTotales()">${options}</select>
         <input type="number" placeholder="Mts" class="col-span-3 p-2 border rounded-lg text-center input-cant-mat" oninput="calcularTotales()">
@@ -145,8 +215,47 @@
       container.appendChild(div);
     }
 
+    function agregarFilaActividad() {
+      const container = document.getElementById('lista-actividades');
+      let options = '<option value="">Seleccionar actividad...</option>';
+      globalCatalogos.actividades.forEach(a => {
+        options += `<option value="${a.id}">${a.nombre} ($${a.costoBase})</option>`;
+      });
+
+      const div = document.createElement('div');
+      div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl text-xs border border-slate-200';
+      div.innerHTML = `
+        <select class="col-span-7 p-2 border rounded-lg bg-white sel-act" onchange="calcularTotales()">${options}</select>
+        <input type="number" value="1" placeholder="Cant" class="col-span-3 p-2 border rounded-lg text-center input-cant-act" oninput="calcularTotales()">
+        <button onclick="this.parentElement.remove(); calcularTotales();" class="col-span-2 text-red-500 font-bold text-center"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(div);
+    }
+
+    function previewFotos(event) {
+      const files = event.target.files;
+      const previewContainer = document.getElementById('preview-container');
+      previewContainer.innerHTML = '';
+      fotosBase64 = [];
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotosBase64.push({ data: e.target.result, name: file.name });
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.className = 'w-full h-16 object-cover rounded-lg border border-slate-300';
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     function calcularTotales() {
       let costoMat = 0;
+      let costoAct = 0;
+
+      // Materiales
       document.querySelectorAll('#lista-materiales > div').forEach(f => {
         const idMat = f.querySelector('.sel-mat').value;
         const cantMetros = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
@@ -158,36 +267,126 @@
           }
         }
       });
-      document.getElementById('lbl-total-cliente').innerText = '$' + (costoMat * 1.35).toFixed(2);
+
+      // Actividades
+      document.querySelectorAll('#lista-actividades > div').forEach(f => {
+        const idAct = f.querySelector('.sel-act').value;
+        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
+        if (idAct && cant > 0) {
+          const item = globalCatalogos.actividades.find(a => a.id === idAct);
+          if (item) {
+            costoAct += cant * item.costoBase;
+          }
+        }
+      });
+
+      const costoDirecto = costoMat + costoAct;
+      const pctMargen = parseFloat(globalConfig['margen_ganancia_defecto_%']) || 35;
+      const totalCliente = costoDirecto * (1 + pctMargen / 100);
+
+      document.getElementById('lbl-total-cliente').innerText = '$' + totalCliente.toFixed(2);
     }
 
     async function enviarCotizacion() {
+      const nombreCli = document.getElementById('cli-nombre').value;
+      if (!nombreCli) {
+        alert('Por favor ingresa el nombre del cliente.');
+        return;
+      }
+
       const btn = document.getElementById('btn-guardar');
+      btn.disabled = true;
       btn.innerText = 'Guardando...';
-      
+
+      const itemsMateriales = [];
+      document.querySelectorAll('#lista-materiales > div').forEach(f => {
+        const id = f.querySelector('.sel-mat').value;
+        const cant = parseFloat(f.querySelector('.input-cant-mat').value) || 0;
+        if(id && cant > 0) {
+          const mat = globalCatalogos.materiales.find(m => m.id === id);
+          const tramos = Math.ceil(cant / mat.largoTramo);
+          itemsMateriales.push({
+            id: mat.id,
+            nombre: mat.nombre,
+            cantidadMetros: cant,
+            tramosCalculados: tramos,
+            precioUnitarioTramo: mat.precioUnitario,
+            subtotal: tramos * mat.precioUnitario
+          });
+        }
+      });
+
+      const itemsActividades = [];
+      document.querySelectorAll('#lista-actividades > div').forEach(f => {
+        const id = f.querySelector('.sel-act').value;
+        const cant = parseFloat(f.querySelector('.input-cant-act').value) || 0;
+        if(id && cant > 0) {
+          const act = globalCatalogos.actividades.find(a => a.id === id);
+          itemsActividades.push({
+            id: act.id,
+            nombre: act.nombre,
+            cantidad: cant,
+            costoBase: act.costoBase,
+            subtotal: cant * act.costoBase
+          });
+        }
+      });
+
+      const costoMat = itemsMateriales.reduce((acc, i) => acc + i.subtotal, 0);
+      const costoAct = itemsActividades.reduce((acc, i) => acc + i.subtotal, 0);
+      const costoDirecto = costoMat + costoAct;
+      const pctMargen = parseFloat(globalConfig['margen_ganancia_defecto_%']) || 35;
+      const montoGanancia = costoDirecto * (pctMargen / 100);
+      const totalCliente = costoDirecto + montoGanancia;
+
+      const medidas = document.getElementById('cli-medidas').value;
+      const tipoProyecto = document.getElementById('cli-proyecto').value;
+
       const payload = {
+        config: globalConfig,
         idTrabajador: usuarioActual.id,
         cliente: {
-          nombre: document.getElementById('cli-nombre').value,
+          nombre: nombreCli,
           telefono: document.getElementById('cli-tel').value,
           correo: document.getElementById('cli-correo').value,
-          tipoProyecto: document.getElementById('cli-proyecto').value
+          direccion: document.getElementById('cli-dir').value,
+          tipoProyecto: medidas ? `${tipoProyecto} (${medidas})` : tipoProyecto
         },
-        itemsMateriales: [],
-        itemsActividades: [],
-        totales: { costoMateriales: 0, costoActividades: 0, costoDirectoTotal: 0, margenGananciaPorcentaje: 35, montoGanancia: 0, subtotalSinImpuesto: 0, impuestoMonto: 0, totalCliente: 0 }
+        itemsMateriales: itemsMateriales,
+        itemsActividades: itemsActividades,
+        totales: {
+          costoMateriales: costoMat,
+          costoActividades: costoAct,
+          costoDirectoTotal: costoDirecto,
+          margenGananciaPorcentaje: pctMargen,
+          montoGanancia: montoGanancia,
+          subtotalSinImpuesto: totalCliente,
+          impuestoMonto: 0,
+          totalCliente: totalCliente
+        },
+        comentarios: document.getElementById('cli-comentarios').value,
+        fotos: fotosBase64
       };
 
-      const res = await fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'guardarCotizacion', payload: payload })
-      }).then(r => r.json());
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'guardarCotizacion', payload: payload })
+        }).then(r => r.json());
 
-      if(res.exito) {
-        alert('Cotización guardada! Folio: ' + res.folio);
-        location.reload();
-      } else {
-        alert('Error: ' + res.mensaje);
+        btn.disabled = false;
+        btn.innerText = 'Guardar Cotización';
+
+        if(res.exito) {
+          alert('¡Cotización guardada con éxito! Folio: ' + res.folio);
+          location.reload();
+        } else {
+          alert('Error al guardar: ' + res.mensaje);
+        }
+      } catch(e) {
+        btn.disabled = false;
+        btn.innerText = 'Guardar Cotización';
+        alert('Error enviando la cotización. Revisa tu conexión.');
       }
     }
   </script>
